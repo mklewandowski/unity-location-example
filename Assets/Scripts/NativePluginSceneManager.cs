@@ -27,6 +27,7 @@ public class NativePluginSceneManager : MonoBehaviour
     double startLong = 0;
     double currLat = 0;
     double currLong = 0;
+    double currAcc = 0;
 
     double[] thresholds5m = {5, 10, 15, 20, 25, 30, 35, 40, 45, 50};
     double[] thresholds2m = {2, 4, 6, 8, 10, 12, 14, 16, 18, 20};
@@ -61,9 +62,11 @@ public class NativePluginSceneManager : MonoBehaviour
             // retrieves the device's current location
             double lat = NativeGPSPlugin.GetLatitude();
             double lon = NativeGPSPlugin.GetLongitude();
-            string loc = "CURRENT LOCATION\nlatitude: " + lat + "\nlongitude: " + lon;
+            double acc = NativeGPSPlugin.GetAccuracy();
+            string loc = "CURRENT LOCATION\nlatitude: " + lat + "\nlongitude: " + lon + "\naccuracy: " + acc;
             currLat = lat;
             currLong = lon;
+            currAcc = acc;
             Debug.Log(loc);
             LocationText.text = loc;
 
@@ -72,7 +75,7 @@ public class NativePluginSceneManager : MonoBehaviour
                 double dist = DistanceBetweenPointsInMeters(startLat, startLong, currLat, currLong);
                 if ((use5mThreshold && dist > thresholds5m[currentThreshold]) || (!use5mThreshold && dist > thresholds2m[currentThreshold]))
                 {
-                    StatusText.text = StatusText.text + "Threshold " + (currentThreshold + 1) + " passed.\n";
+                    StatusText.text = StatusText.text + "Thresh " + (currentThreshold + 1) + "," + dist + "," + acc + "\n";
                     currentThreshold++;
                 }
             }
