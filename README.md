@@ -22,6 +22,7 @@ Use the following steps to run locally:
 ## Platform Support
 This repo has been tested for use on the following platforms:
 - Android
+- iOS
 
 ## Android Settings
 To get permission to access location services on Android, the following is required:
@@ -29,7 +30,7 @@ To get permission to access location services on Android, the following is requi
 
 ## iOS Settings
 To get permission to access the location services on iOS, the following is required:
-- WTD
+- set the location usage description in the build settings.
 
 ## Development Tools
 - Created using Unity 2021.3.3f.1
