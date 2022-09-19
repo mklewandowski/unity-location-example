@@ -17,6 +17,8 @@ public class NativePluginSceneManager : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI DistanceText;
     [SerializeField]
+    TextMeshProUGUI ThresholdText;
+    [SerializeField]
     TextMeshProUGUI StatusText;
 
     GameObject dialog = null;
@@ -34,6 +36,7 @@ public class NativePluginSceneManager : MonoBehaviour
     int currentThreshold = 0;
     bool startThresholds = false;
     bool use5mThreshold = true;
+    float maxAccuracy = 6;
 
     // Start is called before the first frame update
     void Start()
@@ -63,19 +66,30 @@ public class NativePluginSceneManager : MonoBehaviour
             double lat = NativeGPSPlugin.GetLatitude();
             double lon = NativeGPSPlugin.GetLongitude();
             double acc = NativeGPSPlugin.GetAccuracy();
-            string loc = "CURRENT LOCATION\nlatitude: " + lat + "\nlongitude: " + lon + "\naccuracy: " + acc;
-            currLat = lat;
-            currLong = lon;
-            currAcc = acc;
+            string loc = "CURRENT LOCATION\nLAT: " + lat + "\nLONG: " + lon + "\nACC: " + acc;
             Debug.Log(loc);
-            LocationText.text = loc;
+            if (acc < maxAccuracy)
+            {
+                currLat = lat;
+                currLong = lon;
+                currAcc = acc;
+                LocationText.text = loc;
+                if (startLat != 0 && startLong != 0)
+                    ComputeDistance();
+                StatusText.text = "Acceptable Accuracy";
+            }
+            else
+            {
+                StatusText.text = "Poor Accuracy";
+            }
 
             if (startThresholds && currentThreshold < thresholds5m.Length)
             {
                 double dist = DistanceBetweenPointsInMeters(startLat, startLong, currLat, currLong);
                 if ((use5mThreshold && dist > thresholds5m[currentThreshold]) || (!use5mThreshold && dist > thresholds2m[currentThreshold]))
                 {
-                    StatusText.text = StatusText.text + "Thresh " + (currentThreshold + 1) + "," + dist + "," + acc + "\n";
+                    int thresh = use5mThreshold ? (currentThreshold + 1) * 5 : (currentThreshold + 1) * 2;
+                    ThresholdText.text = ThresholdText.text + thresh + "m, d:" + dist + ", a:" + acc + "\n";
                     currentThreshold++;
                 }
             }
@@ -112,27 +126,31 @@ public class NativePluginSceneManager : MonoBehaviour
         startLat = currLat;
         startLong = currLong;
         // retrieves the device's current location
-        string loc = "START LOCATION\nlatitude: " + startLat + "\nlongitude: " + startLong;
+        string loc = "START LOCATION\nLAT: " + startLat + "\nLONG: " + startLong;
         StartLocationText.text = loc;
         currentThreshold = 0;
         startThresholds = true;
-        StatusText.text = "STATUS\n";
+        if (use5mThreshold)
+            ThresholdText.text = "THRESHOLDS (using 5m threshold)\n";
+        else
+            ThresholdText.text = "THRESHOLDS (using 2m threshold)\n";
     }
 
     public void ComputeDistance()
     {
         double dist = DistanceBetweenPointsInMeters(startLat, startLong, currLat, currLong);
 
-        DistanceText.text = "START LOCATION\nlatitude: " + startLat + "\nlongitude: " + startLong + "\nCURRENT LOCATION\nlatitude: " + currLat + "\nlongitude: " + currLong + "\nDISTANCE\n" + dist + " m";
+        // DistanceText.text = "START LOCATION\nlatitude: " + startLat + "\nlongitude: " + startLong + "\nCURRENT LOCATION\nlatitude: " + currLat + "\nlongitude: " + currLong + "\nDISTANCE\n" + dist + " m";
+        DistanceText.text = "DISTANCE\n" + dist + "m";
     }
 
     public void ToggleThreshold()
     {
         use5mThreshold = !use5mThreshold;
         if (use5mThreshold)
-            StatusText.text = "STATUS\nusing 5m threshold";
+            ThresholdText.text = "THRESHOLDS (using 5m threshold)\n";
         else
-            StatusText.text = "STATUS\nusing 2m threshold";
+            ThresholdText.text = "THRESHOLDS (using 2m threshold)\n";
     }
 
     public static double DistanceBetweenPointsInMeters(double lat1, double lon1, double lat2, double lon2)
