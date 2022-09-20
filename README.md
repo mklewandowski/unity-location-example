@@ -5,13 +5,15 @@ SampleScene:
 - Press the Update button to start the location service and get the current device latitude and longitude. This is saved internally as the current location.
 - Press the Set Start button to take the current location recorded in the previous step and store it as the start location.
 - Press the Distance button to calculate the distance in meters between the start location and current location.
+- This scene uses the Unity Location Services which limits the precision of locations due to its use of floating point values.
 
 NativePluginScene:
-- In Update function the current device latitude and longitude is retrieved. This is saved internally as the current location.
+- In the Update function the current device latitude and longitude is retrieved. This is saved internally as the current location. If a start location has been stored, then the current distance to the start location is also calculated and displayed.
 - Press the Set Start button to take the current location recorded in the previous step and store it as the start location.
-- Press the Distance button to calculate the distance in meters between the start location and current location.
-- When user walks and distance thresholds are passed, the threshold number is shown at the bottom under STATUS.
-- Press the Toggle Threshold button to toggle between 1 and 5 m theshold increments.
+- When the user walks and distance thresholds are passed, information about the threshold is displayed under THRESHOLD.
+- Press the Toggle Threshold button to toggle between 2 meter and 5 meter threshold increments.
+- Location values with an accuracy worse than 8 meters are ignored.
+- This scene uses the Native GPS Plugin (iOS/Android) plugin which provides greater location precision by using double values for locations.
 
 ## Running Locally
 Use the following steps to run locally:
