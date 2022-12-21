@@ -18,7 +18,7 @@ NativePluginScene:
 ## Running Locally
 Use the following steps to run locally:
 1. Clone this repo
-2. Open repo folder using Unity 2021.3.11f1
+2. Open repo folder using Unity 2021.3.15f1
 3. Install Text Mesh Pro
 
 ## Platform Support
@@ -35,7 +35,7 @@ To get permission to access the location services on iOS, the following is requi
 - set the location usage description in the build settings.
 
 ## Development Tools
-- Created using Unity 2021.3.11f1
+- Created using Unity 2021.3.15f1
 - Code edited using Visual Studio Code.
 
 ## Credits
